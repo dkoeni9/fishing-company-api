@@ -1,4 +1,4 @@
-from api.models import Fish, FishBase, FishInBase
+from api.models import Fish, FishInFishingBase, FishingBase
 from rest_framework import serializers
 
 
@@ -8,14 +8,14 @@ class FishSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class FishBaseSerializer(serializers.ModelSerializer):
+class FishingBaseSerializer(serializers.ModelSerializer):
     fish_count = serializers.SerializerMethodField(read_only=True)
 
     def get_fish_count(self, obj):
         return obj.fish.count()
 
     class Meta:
-        model = FishBase
+        model = FishingBase
         fields = (
             "id",
             "name",
@@ -29,34 +29,36 @@ class FishBaseSerializer(serializers.ModelSerializer):
         )
 
 
-class SimpleFishBaseSerializer(serializers.ModelSerializer):
+class SimpleFishingBaseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FishBase
+        model = FishingBase
         fields = ("id", "name", "address")
 
 
-class FishBasePhotoSerializer(serializers.ModelSerializer):
+class FishingBasePhotoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FishBase
+        model = FishingBase
         fields = ("photo",)
 
 
-class FBFishesSerializer(serializers.ModelSerializer):
+class FishingBaseFishSerializer(serializers.ModelSerializer):
     fish_id = serializers.IntegerField(write_only=True)
     id = serializers.IntegerField(source="fish.id", read_only=True)
     name = serializers.CharField(source="fish.name", read_only=True)
     description = serializers.CharField(source="fish.description", read_only=True)
 
     class Meta:
-        model = FishInBase
+        model = FishInFishingBase
         fields = ("fish_id", "id", "name", "description", "price_per_kilo")
 
 
-class FishBaseDetailSerializer(serializers.ModelSerializer):
-    fish = FBFishesSerializer(source="fishinbase_set", many=True, read_only=True)
+class FishingBaseDetailSerializer(serializers.ModelSerializer):
+    fish = FishingBaseFishSerializer(
+        source="fishinfishingbase_set", many=True, read_only=True
+    )
 
     class Meta:
-        model = FishBase
+        model = FishingBase
         fields = (
             "id",
             "name",

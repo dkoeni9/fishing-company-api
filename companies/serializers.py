@@ -1,7 +1,7 @@
-from api.models import Company, FishBase, StaffProfile, User
+from api.models import Company, FishingBase, StaffProfile, User
 from djoser.conf import settings
 from djoser.serializers import UserCreateSerializer
-from fishing_bases.serializers import FishBaseSerializer, SimpleFishBaseSerializer
+from fishing_bases.serializers import FishingBaseSerializer, SimpleFishingBaseSerializer
 from rest_framework import serializers
 
 
@@ -14,11 +14,13 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class CompanyBasesSerializer(serializers.ModelSerializer):
-    fish_bases = FishBaseSerializer(source="fishbase_set", many=True, read_only=True)
+    fishing_bases = FishingBaseSerializer(
+        source="fishingbase_set", many=True, read_only=True
+    )
 
     class Meta:
         model = Company
-        fields = ("id", "name", "address", "fish_bases")
+        fields = ("id", "name", "address", "fishing_bases")
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -26,7 +28,7 @@ class StaffSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source="user.first_name", read_only=True)
     middle_name = serializers.CharField(source="user.middle_name", read_only=True)
     last_name = serializers.CharField(source="user.last_name", read_only=True)
-    fish_base = SimpleFishBaseSerializer(read_only=True)
+    fishing_base = SimpleFishingBaseSerializer(read_only=True)
 
     class Meta:
         model = StaffProfile
@@ -36,13 +38,13 @@ class StaffSerializer(serializers.ModelSerializer):
             "first_name",
             "middle_name",
             "last_name",
-            "fish_base",
+            "fishing_base",
         )
 
 
 class StaffCreateSerializer(UserCreateSerializer):
-    fish_base_id = serializers.PrimaryKeyRelatedField(
-        queryset=FishBase.objects.all(), write_only=True
+    fishing_base_id = serializers.PrimaryKeyRelatedField(
+        queryset=FishingBase.objects.all(), write_only=True
     )
     description = serializers.CharField(write_only=True, allow_blank=True)
 
@@ -51,30 +53,30 @@ class StaffCreateSerializer(UserCreateSerializer):
         fields = (settings.USER_ID_FIELD, settings.LOGIN_FIELD, "password") + tuple(
             User.REQUIRED_FIELDS
         )
-        fields += ("description", "fish_base_id")
+        fields += ("description", "fishing_base_id")
 
-    def validate_fish_base_id(self, fish_base):
+    def validate_fishing_base_id(self, fishing_base):
         user = self.context["request"].user
 
-        if fish_base.company != user.company:
+        if fishing_base.company != user.company:
             raise serializers.ValidationError(
-                "Fish base does not belong to your company."
+                "Fishing base does not belong to your company."
             )
 
-        return fish_base
+        return fishing_base
 
     def validate(self, attrs):
-        attrs.pop("fish_base_id", None)
+        attrs.pop("fishing_base_id", None)
         attrs.pop("description", None)
         return super().validate(attrs)
 
     def create(self, validated_data):
-        fish_base_id = self.initial_data.get("fish_base_id")
+        fishing_base_id = self.initial_data.get("fishing_base_id")
         description = self.initial_data.get("description", "")
 
         user = super().create(validated_data)
-        fish_base = FishBase.objects.get(pk=fish_base_id)
+        fishing_base = FishingBase.objects.get(pk=fishing_base_id)
         StaffProfile.objects.create(
-            user=user, fish_base=fish_base, description=description
+            user=user, fishing_base=fishing_base, description=description
         )
         return user

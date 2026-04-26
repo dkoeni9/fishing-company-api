@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group
 
-from api.models import FishBase, StaffProfile
+from api.models import FishingBase, StaffProfile
 from api.permissions import IsEntrepreneur
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import generics, status
@@ -24,14 +24,14 @@ class StaffViewSet(DjoserUserViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        fish_base_ids = FishBase.objects.filter(company=user.company).values_list(
+        fishing_base_ids = FishingBase.objects.filter(company=user.company).values_list(
             "id", flat=True
         )
 
         return (
-            StaffProfile.objects.filter(fish_base_id__in=fish_base_ids)
-            .select_related("user", "fish_base")
-            .order_by("fish_base_id")
+            StaffProfile.objects.filter(fishing_base_id__in=fishing_base_ids)
+            .select_related("user", "fishing_base")
+            .order_by("fishing_base_id")
         )
 
     def get_serializer_class(self):

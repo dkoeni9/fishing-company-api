@@ -1,5 +1,5 @@
 from django.urls import path
-from fishing_bases.views import FishBaseViewSet
+from fishing_bases.views import FishingBaseViewSet
 
 from . import views
 
@@ -9,8 +9,8 @@ urlpatterns = [
         views.CompanyView.as_view(),
     ),
     path(
-        "company/get-fishbases/",
-        FishBaseViewSet.as_view({"get": "list"}),
+        "company/get-fishing-bases/",
+        FishingBaseViewSet.as_view({"get": "list"}),
     ),
     path(
         "company/get-staff/",
@@ -18,7 +18,7 @@ urlpatterns = [
     ),
     path(
         "company/add-base/",
-        FishBaseViewSet.as_view(
+        FishingBaseViewSet.as_view(
             {"post": "create"},
         ),
     ),

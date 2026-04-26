@@ -1,6 +1,6 @@
 from django.db import models
 
-from fishing_bases.models import FishBase
+from fishing_bases.models import FishingBase
 from users.models import User
 
 
@@ -26,13 +26,18 @@ class StaffProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="staff_profile"
     )
-    fish_base = models.ForeignKey(
-        FishBase, on_delete=models.CASCADE, related_name="staff", blank=True, null=True
+    fishing_base = models.ForeignKey(
+        FishingBase,
+        on_delete=models.CASCADE,
+        related_name="staff",
+        blank=True,
+        null=True,
+        db_column="fish_base_id",
     )
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.fish_base.name}"
+        return f"{self.user.username} - {self.fishing_base.name}"
 
     class Meta:
         app_label = "api"

@@ -4,23 +4,23 @@ from . import views
 
 urlpatterns = [
     path(
-        "fishbase/<int:pk>/remove-base/",
-        views.FishBaseViewSet.as_view({"delete": "destroy"}),
+        "fishing-base/<int:pk>/remove-base/",
+        views.FishingBaseViewSet.as_view({"delete": "destroy"}),
     ),
     path(
-        "fishbase/<int:base_id>/get-all-fishes/",
-        views.FBFishesViewSet.as_view({"get": "list"}),
+        "fishing-base/<int:base_id>/get-all-fishes/",
+        views.FishingBaseFishViewSet.as_view({"get": "list"}),
     ),
     path(
-        "fishbase/<int:base_id>/add-fish/",
-        views.FBFishesViewSet.as_view({"post": "create"}),
+        "fishing-base/<int:base_id>/add-fish/",
+        views.FishingBaseFishViewSet.as_view({"post": "create"}),
     ),
     path(
-        "fishbase/<int:base_id>/remove-fish/<int:fish_id>/",
-        views.FBFishesViewSet.as_view({"delete": "destroy"}),
+        "fishing-base/<int:base_id>/remove-fish/<int:fish_id>/",
+        views.FishingBaseFishViewSet.as_view({"delete": "destroy"}),
     ),
     path(
-        "fishbase/<int:pk>/upload-photo/",
+        "fishing-base/<int:pk>/upload-photo/",
         views.UploadPhotoView.as_view(),
     ),
     path(
@@ -28,7 +28,7 @@ urlpatterns = [
         views.FishListView.as_view(),
     ),
     path(
-        "search/get-fishbases/",
-        views.SearchFishBaseListView.as_view(),
+        "search/get-fishing-bases/",
+        views.SearchFishingBaseListView.as_view(),
     ),
 ]

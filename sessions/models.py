@@ -1,6 +1,6 @@
 from django.db import models
 
-from fishing_bases.models import FishBase
+from fishing_bases.models import FishingBase
 from users.models import User
 
 
@@ -13,7 +13,9 @@ class FishingSession(models.Model):
     status = models.PositiveSmallIntegerField(
         choices=Status.choices, default=Status.CREATED
     )
-    fish_base = models.ForeignKey(FishBase, on_delete=models.CASCADE)
+    fishing_base = models.ForeignKey(
+        FishingBase, on_delete=models.CASCADE, db_column="fish_base_id"
+    )
     staff = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="sessions", null=True
     )
@@ -25,7 +27,7 @@ class FishingSession(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return f"Fishing session at {self.fish_base.name} by {self.staff.username}"
+        return f"Fishing session at {self.fishing_base.name} by {self.staff.username}"
 
     class Meta:
         app_label = "api"
