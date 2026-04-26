@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "api",
+    "users",
+    "companies",
+    "fishing_bases",
+    "sessions.apps.SessionsConfig",
     "rest_framework",
     "djoser",
     "rest_framework.authtoken",
@@ -142,7 +146,7 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     "SERIALIZERS": {
-        "token": "api.serializers.CustomTokenSerializer",
+        "token": "users.serializers.CustomTokenSerializer",
     },
 }
 
