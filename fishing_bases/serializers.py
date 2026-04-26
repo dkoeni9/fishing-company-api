@@ -11,7 +11,7 @@ class FishSerializer(serializers.ModelSerializer):
 class FishingBaseSerializer(serializers.ModelSerializer):
     fish_count = serializers.SerializerMethodField(read_only=True)
 
-    def get_fish_count(self, obj):
+    def get_fish_count(self, obj) -> int:
         return obj.fish.count()
 
     class Meta:

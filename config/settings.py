@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "fishing_bases",
     "sessions.apps.SessionsConfig",
     "rest_framework",
+    "drf_spectacular",
     "djoser",
     "rest_framework.authtoken",
 ]
@@ -136,12 +137,20 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "api.authentication.CustomTokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Fish Company API",
+    "DESCRIPTION": "API documentation for the Fish Company service.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 DJOSER = {
