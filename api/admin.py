@@ -5,6 +5,6 @@ from .models import *
 
 admin.site.register(Company)
 admin.site.register(User)
-admin.site.register(StaffProfile)
+admin.site.register(FishingBaseStaff)
 admin.site.register(Fish)
 admin.site.register(FishingBase)

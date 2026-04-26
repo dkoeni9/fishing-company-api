@@ -1,4 +1,4 @@
-from api.models import Company, FishingBase, StaffProfile, User
+from api.models import Company, FishingBase, FishingBaseStaff, User
 from djoser.conf import settings
 from djoser.serializers import UserCreateSerializer
 from fishing_bases.serializers import FishingBaseSerializer, SimpleFishingBaseSerializer
@@ -31,7 +31,7 @@ class StaffSerializer(serializers.ModelSerializer):
     fishing_base = SimpleFishingBaseSerializer(read_only=True)
 
     class Meta:
-        model = StaffProfile
+        model = FishingBaseStaff
         fields = (
             "id",
             "username",
@@ -76,7 +76,7 @@ class StaffCreateSerializer(UserCreateSerializer):
 
         user = super().create(validated_data)
         fishing_base = FishingBase.objects.get(pk=fishing_base_id)
-        StaffProfile.objects.create(
+        FishingBaseStaff.objects.create(
             user=user, fishing_base=fishing_base, description=description
         )
         return user

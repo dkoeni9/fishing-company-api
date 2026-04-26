@@ -47,7 +47,7 @@ class FishingSessionViewSet(viewsets.ViewSet):
     def start_session(self, request, pk=None):
         session = get_object_or_404(FishingSession, pk=pk)
 
-        if session.fishing_base != request.user.staff_profile.fishing_base:
+        if session.fishing_base != request.user.fishing_base_staff.fishing_base:
             return Response({"detail": "Not your fishing base."}, status=403)
 
         if session.status != 1:
@@ -66,7 +66,7 @@ class FishingSessionViewSet(viewsets.ViewSet):
     def close_session(self, request, pk=None):
         session = get_object_or_404(FishingSession, pk=pk)
 
-        if session.fishing_base != request.user.staff_profile.fishing_base:
+        if session.fishing_base != request.user.fishing_base_staff.fishing_base:
             return Response({"detail": "Not your fishing base."}, status=403)
 
         if session.status != 2:
@@ -90,7 +90,7 @@ class FishingSessionViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=["get"])
     def active_sessions(self, request):
-        fishing_base = request.user.staff_profile.fishing_base
+        fishing_base = request.user.fishing_base_staff.fishing_base
         sessions = FishingSession.objects.filter(
             fishing_base=fishing_base,
             status__in=[FishingSession.Status.CREATED, FishingSession.Status.STARTED],

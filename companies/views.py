@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group
 
-from api.models import FishingBase, StaffProfile
+from api.models import FishingBase, FishingBaseStaff
 from api.permissions import IsEntrepreneur
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import generics, status
@@ -29,7 +29,7 @@ class StaffViewSet(DjoserUserViewSet):
         )
 
         return (
-            StaffProfile.objects.filter(fishing_base_id__in=fishing_base_ids)
+            FishingBaseStaff.objects.filter(fishing_base_id__in=fishing_base_ids)
             .select_related("user", "fishing_base")
             .order_by("fishing_base_id")
         )
@@ -50,8 +50,8 @@ class StaffViewSet(DjoserUserViewSet):
         serializer.instance.groups.add(staff_group)
 
     def destroy(self, request, *args, **kwargs):
-        staff_profile = self.get_object()
-        user = staff_profile.user
+        fishing_base_staff = self.get_object()
+        user = fishing_base_staff.user
 
         try:
             staff_group = Group.objects.get(name="Staff")
@@ -61,6 +61,6 @@ class StaffViewSet(DjoserUserViewSet):
 
         user.is_active = False
         user.save()
-        staff_profile.delete()
+        fishing_base_staff.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

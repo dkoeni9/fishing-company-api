@@ -1,8 +1,9 @@
-from companies.models import Company, StaffProfile
+from companies.models import Company
 from fishing_bases.models import (
     Fish,
     FishInFishingBase,
     FishingBase,
+    FishingBaseStaff,
     fishing_base_photo_path,
 )
 from sessions.models import FishingSession
@@ -16,8 +17,8 @@ __all__ = [
     "Fish",
     "FishInFishingBase",
     "FishingBase",
+    "FishingBaseStaff",
     "FishingSession",
-    "StaffProfile",
     "User",
     "fishing_base_photo_path",
 ]
