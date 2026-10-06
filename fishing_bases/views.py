@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from api.models import Fish, FishInFishingBase, FishingBase
 from api.permissions import IsEntrepreneur
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters, generics, status, views, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -17,6 +18,19 @@ from .serializers import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        tags=["companies / fishing bases"],
+        summary="List company fishing bases",
+    ),
+    create=extend_schema(
+        tags=["companies / fishing bases"],
+        summary="Create company fishing base",
+    ),
+    destroy=extend_schema(
+        tags=["companies / fishing bases"], summary="Delete company fishing base"
+    ),
+)
 class FishingBaseViewSet(viewsets.ModelViewSet):
     serializer_class = FishingBaseSerializer
     permission_classes = [IsEntrepreneur]
@@ -29,6 +43,23 @@ class FishingBaseViewSet(viewsets.ModelViewSet):
         serializer.save(company=self.request.user.company)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        tags=["companies / fishing bases / fishes"],
+        summary="List fish in fishing base",
+        description="Returns fish species available in the selected fishing base.",
+    ),
+    create=extend_schema(
+        tags=["companies / fishing bases / fishes"],
+        summary="Add fish to fishing base",
+        description="Adds a fish species and price per kilo to the selected fishing base.",
+    ),
+    destroy=extend_schema(
+        tags=["companies / fishing bases / fishes"],
+        summary="Remove fish from fishing base",
+        description="Removes a fish species from the selected fishing base.",
+    ),
+)
 class FishingBaseFishViewSet(viewsets.ModelViewSet):
     serializer_class = FishingBaseFishSerializer
     permission_classes = [IsEntrepreneur]
@@ -82,6 +113,17 @@ class FishListView(generics.ListAPIView):
     permission_classes = [IsEntrepreneur]
 
 
+@extend_schema(
+    tags=["companies / fishing bases"],
+    summary="Upload fishing base photo",
+    description=(
+        "Uploads a photo in .png or .jpg format for the fish base of your company, API saves it in .jpg and gives the path to the file.",
+        "",
+        "Keep attention, that Entrepreneur has permission to do this action only with his own company",
+    ),
+    request=FishingBasePhotoSerializer,
+    responses=FishingBasePhotoSerializer,
+)
 class UploadPhotoView(views.APIView):
     serializer_class = FishingBasePhotoSerializer
     permission_classes = [IsEntrepreneur]
@@ -112,13 +154,18 @@ class UploadPhotoView(views.APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                {"Path": fishing_base.photo.url}, status=status.HTTP_200_OK
-            )
+            return Response({"Path": fishing_base.photo.url}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    tags=["fishing bases search"],
+    summary="Get a list of fish bases.",
+    description="The search parameter filters the data by the occurrence of the string in the name and address of the fish base, as well as in the list of fish in the fish base.",
+    request=FishingBasePhotoSerializer,
+    responses=FishingBasePhotoSerializer,
+)
 class SearchFishingBaseListView(generics.ListAPIView):
     serializer_class = FishingBaseDetailSerializer
     permission_classes = [AllowAny]

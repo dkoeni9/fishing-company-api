@@ -4,23 +4,23 @@ from . import views
 
 urlpatterns = [
     path(
-        "session/get-your-session/",
+        "session/me/",
         views.FishingSessionViewSet.as_view({"get": "list"}),
     ),
     path(
-        "session/create-session/",
+        "session/",
         views.FishingSessionViewSet.as_view({"post": "create"}),
     ),
     path(
-        "session/get-staff-session/",
+        "session/staff/",
         views.FishingSessionViewSet.as_view({"get": "active_sessions"}),
     ),
     path(
-        "session/start-session/<int:pk>/",
+        "session/<int:pk>/start/",
         views.FishingSessionViewSet.as_view({"post": "start_session"}),
     ),
     path(
-        "session/close-session/<int:pk>/",
+        "session/<int:pk>/close/",
         views.FishingSessionViewSet.as_view({"post": "close_session"}),
     ),
 ]

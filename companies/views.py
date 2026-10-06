@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group
+from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from api.models import FishingBase, FishingBaseStaff
 from api.permissions import IsEntrepreneur
@@ -10,6 +11,11 @@ from .serializers import CompanySerializer, StaffCreateSerializer, StaffSerializ
 from users.serializers import CustomUserDeleteSerializer
 
 
+@extend_schema(
+    summary="Get information about your company",
+    request=CompanySerializer,
+    responses=CompanySerializer,
+)
 class CompanyView(generics.RetrieveAPIView):
     serializer_class = CompanySerializer
     permission_classes = [IsEntrepreneur]
@@ -18,6 +24,11 @@ class CompanyView(generics.RetrieveAPIView):
         return self.request.user.company
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["companies / staff"], summary="List company staff"),
+    create=extend_schema(tags=["companies / staff"], summary="Create company staff"),
+    destroy=extend_schema(tags=["companies / staff"], summary="Remove company staff"),
+)
 class StaffViewSet(DjoserUserViewSet):
     def get_permissions(self):
         return [IsEntrepreneur()]

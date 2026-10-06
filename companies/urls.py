@@ -1,33 +1,75 @@
 from django.urls import path
-from fishing_bases.views import FishingBaseViewSet
 
-from . import views
+from .views import CompanyView, StaffViewSet
+from fishing_bases.views import (
+    FishingBaseFishViewSet,
+    FishingBaseViewSet,
+    UploadPhotoView,
+)
+from users.views import EntrepreneurViewSet
 
 urlpatterns = [
     path(
-        "company/get-info/",
-        views.CompanyView.as_view(),
+        "companies/",
+        EntrepreneurViewSet.as_view({"post": "create"}),
     ),
     path(
-        "company/get-fishing-bases/",
-        FishingBaseViewSet.as_view({"get": "list"}),
+        "companies/me/",
+        CompanyView.as_view(),
     ),
     path(
-        "company/get-staff/",
-        views.StaffViewSet.as_view({"get": "list"}),
-    ),
-    path(
-        "company/add-base/",
+        "companies/me/fishing-bases/",
         FishingBaseViewSet.as_view(
-            {"post": "create"},
+            {
+                "get": "list",
+                "post": "create",
+            }
         ),
     ),
     path(
-        "company/add-staff/",
-        views.StaffViewSet.as_view({"post": "create"}),
+        "companies/me/fishing-bases/<int:pk>/",
+        FishingBaseViewSet.as_view(
+            {
+                "delete": "destroy",
+            }
+        ),
     ),
     path(
-        "company/remove-staff/<int:id>/",
-        views.StaffViewSet.as_view({"delete": "destroy"}),
+        "companies/me/fishing-bases/<int:base_id>/fishes/",
+        FishingBaseFishViewSet.as_view(
+            {
+                "get": "list",
+                "post": "create",
+            }
+        ),
+    ),
+    path(
+        "companies/me/fishing-bases/<int:base_id>/fishes/<int:fish_id>/",
+        FishingBaseFishViewSet.as_view(
+            {
+                "delete": "destroy",
+            }
+        ),
+    ),
+    path(
+        "companies/me/fishing-bases/<int:pk>/photo/",
+        UploadPhotoView.as_view(),
+    ),
+    path(
+        "companies/me/staff/",
+        StaffViewSet.as_view(
+            {
+                "get": "list",
+                "post": "create",
+            }
+        ),
+    ),
+    path(
+        "companies/me/staff/<int:id>/",
+        StaffViewSet.as_view(
+            {
+                "delete": "destroy",
+            }
+        ),
     ),
 ]
